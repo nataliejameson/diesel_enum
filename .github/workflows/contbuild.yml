@@ -1,0 +1,65 @@
+name: Contbuild
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup SSH Keys and known_hosts
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.CARGO_SSH }}"
+    - name: setup git
+      run: |
+        git config --global user.email natalie@natalie.wtf
+        git config --global user.name "Natalie Jameson"
+        git config --global init.defaultBranch main
+    - name: install cargo sort
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo install cargo-sort
+    - name: install nightly
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: rustup toolchain install nightly
+    - name: install rustfmt nightly
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: rustup component add rustfmt --toolchain nightly
+    - name: cargo sort
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo sort --check
+    - name: cargo fmt
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo +nightly fmt --check
+    - name: cargo build
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo build --all-targets --all-features
+    - name: clippy
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo clippy --all-features -- -D warnings
+    - name: cargo test
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo test --all-targets --all-features
+    - name: cargo doc tests
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: cargo test --doc --all-features

@@ -1,0 +1,16 @@
+[package]
+name = "diesel_enum"
+version = "0.1.0"
+edition = "2021"
+description = "A library for deriving enum reprs in the database"
+authors = ["Natalie Jameson <natalie@natalie.wtf>"]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.98"
+derivative = "2.2.0"
+
+[dev-dependencies]
+diesel = { version = "2.2.10", features = ["chrono", "r2d2", "sqlite"] }
+diesel_enum_derive = { path = "./diesel_enum_derive" }
+tempfile = "3.20.0"
