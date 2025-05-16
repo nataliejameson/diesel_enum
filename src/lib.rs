@@ -6,7 +6,6 @@ mod tests {
     use diesel::deserialize::FromSql;
     use diesel::deserialize::QueryableByName;
     use diesel::row::NamedRow;
-    use diesel::serialize::ToSql;
     use diesel::sql_query;
     use diesel::AsExpression;
     use diesel::Connection;

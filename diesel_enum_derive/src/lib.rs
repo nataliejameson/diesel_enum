@@ -170,7 +170,7 @@ fn render_unknown_variant(
     Ok(found.map(|v| {
         let span = v.span();
         let ident = v.ident.clone();
-        let to_sql = quote_spanned! {span=> Self::#ident(v) => <String as ToSql<#diesel_crate::sql_types::Text, DB>>::to_sql(v, out) };
+        let to_sql = quote_spanned! {span=> Self::#ident(v) => <String as #diesel_crate::serialize::ToSql<#diesel_crate::sql_types::Text, DB>>::to_sql(v, out) };
         // "s" is the string from the parent context. Let's not clone an object we already have.
         let from_sql = quote_spanned! {span=> _ => Ok(Self::#ident(s)) };
         (to_sql, from_sql)
@@ -247,7 +247,7 @@ fn impl_diesel_enum(ast: syn::DeriveInput) -> syn::Result<proc_macro2::TokenStre
     };
 
     let to_impl = quote! {
-        impl<DB> ToSql<#diesel_crate::sql_types::Text, DB> for #name
+        impl<DB> #diesel_crate::serialize::ToSql<#diesel_crate::sql_types::Text, DB> for #name
             where
                 DB: #diesel_crate::backend::Backend,
                 str: #diesel_crate::serialize::ToSql<#diesel_crate::sql_types::Text, DB> {
@@ -260,7 +260,7 @@ fn impl_diesel_enum(ast: syn::DeriveInput) -> syn::Result<proc_macro2::TokenStre
     };
 
     let from_impl = quote! {
-        impl<DB> FromSql<diesel::sql_types::Text, DB> for #name
+        impl<DB> #diesel_crate::deserialize::FromSql<diesel::sql_types::Text, DB> for #name
             where
                 DB: #diesel_crate::backend::Backend,
                 String: #diesel_crate::deserialize::FromSql<diesel::sql_types::Text, DB> {
