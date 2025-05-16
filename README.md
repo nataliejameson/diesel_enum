@@ -13,10 +13,10 @@ By default all names are converted to snake case to be stored in the database, b
 # Example
 
 ```rust
-use diesel_enum::DbEnum;
+use diesel_enum::DieselEnum;
 
 /// Serializes as "bar", "baz", "baz_like"
-#[derive(DbEnum)]
+#[derive(DieselEnum)]
 enum Foo {
     Bar,
     Baz,
@@ -24,7 +24,7 @@ enum Foo {
 }
 
 /// Serializes as "bar", "baz", "bazLike"
-#[derive(DbEnum)]
+#[derive(DieselEnum)]
 #[diesel_enum(case="Camel")]
 enum Foo {
     Bar,
@@ -33,7 +33,7 @@ enum Foo {
 }
 
 /// Serializes as "bar_1", "baz_1", "bazLike"
-#[derive(DbEnum)]
+#[derive(DieselEnum)]
 enum Foo {
     Bar1,
     Baz1,
@@ -42,7 +42,7 @@ enum Foo {
 }
 
 /// Serializes as "bar", "baz", "not_aBaz"
-#[derive(DbEnum)]
+#[derive(DieselEnum)]
 enum Foo {
     Bar,
     Baz,
@@ -52,7 +52,7 @@ enum Foo {
 
 /// Serializes as "bar", "baz", or any other value if it's placed in `Unknown`
 /// Values in the database that are not "bar" or "baz" are deserialized without modification into `Unknown` 
-#[derive(DbEnum)]
+#[derive(DieselEnum)]
 enum Foo {
     Bar,
     Baz,
